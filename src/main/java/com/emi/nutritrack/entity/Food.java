@@ -1,19 +1,15 @@
 package com.emi.nutritrack.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "Foods") 
+@Table(name = "foods")
 public class Food {
 
 
-
-    @GeneratedValue()
+    @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -34,15 +30,19 @@ public class Food {
     @Column(nullable = false)
     private int quantityReference;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private int unit;
+    private Unit unit;
 
-    @Column(nullable = false)
-    private String foodCategory;
+    @ManyToOne
+    @JoinColumn(name = "food_category_id")
+    private FoodCategory foodCategory;
 
+    @OneToMany(mappedBy = "food")
+    private List<MealEntry> mealEntries;
 
     public Food(){}
-    public Food(String name, int protein, int calories, int carbs, int fat, int quantityReference, int unit, String foodCategory)
+    public Food(String name, int protein, int calories, int carbs, int fat, int quantityReference, Unit unit, FoodCategory foodCategory)
     {
         this.name = name;
         this.calories = calories;
@@ -78,14 +78,13 @@ public class Food {
         return quantityReference;
     }
 
-    public int getUnit() {
+    public Unit getUnit() {
         return unit;
     }
 
-    public String getFoodCategory() {
+    public FoodCategory getFoodCategory() {
         return foodCategory;
     }
-
     public Long getId() {
         return id;
     }
@@ -102,7 +101,7 @@ public class Food {
         this.fat = fat;
     }
 
-    public void setFoodCategory(String foodCategory) {
+    public void setFoodCategory(FoodCategory foodCategory) {
         this.foodCategory = foodCategory;
     }
 
@@ -122,7 +121,7 @@ public class Food {
         this.quantityReference = quantityReference;
     }
 
-    public void setUnit(int unit) {
+    public void setUnit(Unit unit) {
         this.unit = unit;
     }
 }

@@ -1,39 +1,94 @@
 package com.emi.nutritrack.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "daily_logs")
 public class DailyLog {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private date date;
+
+    @Column(nullable = false)
+    private LocalDate date;
+
+    @Column(nullable = false)
     private int totalCalories;
+
+    @Column(nullable = true)
     private int totalProtein;
+
+    @Column(nullable = true)
     private int totalCarbs;
+
+    @Column(nullable = true)
     private int totalFat;
-    private String user;
-    /*
 
-        id
-    date
-    totalCalories
-    totalProtein
-    totalCarbs
-    totalFat
-    user
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable=false)
+    private User user;
 
+    public DailyLog(){}
+    public DailyLog(LocalDate date, int totalCalories, int totalCarbs, int totalProtein, int totalFat)
+    {
+        this.date = date;
+        this.totalCalories = totalCalories;
+        this.totalCarbs = totalCarbs;
+        this.totalProtein = totalProtein;
+        this.totalFat = totalFat;
+    }
 
-         user aura une relation vers mealentry dailylog dailygoal qui sera one to many
-         j'aurais food qui aura une relation entre foodcategory one to many
-         user aura une relation vers mealentry one to many aussi
-         meal entry aura une relation vers user qui aura many to one
-         foodcategory aura un many to one vers food
-         dailylog aura une relation de many to one avec user et daily goal aussi si il en reste tu sais juste me citer les tables qui me resterait à lier
+    public Long getId() {
+        return id;
+    }
 
+    public int getTotalCalories() {
+        return totalCalories;
+    }
 
+    public LocalDate getDate() {
+        return date;
+    }
 
-     */
+    public int getTotalCarbs() {
+        return totalCarbs;
+    }
 
+    public int getTotalFat() {
+        return totalFat;
+    }
 
+    public int getTotalProtein() {
+        return totalProtein;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setTotalCalories(int totalCalories) {
+        this.totalCalories = totalCalories;
+    }
+
+    public void setTotalCarbs(int totalCarbs) {
+        this.totalCarbs = totalCarbs;
+    }
+
+    public void setTotalFat(int totalFat) {
+        this.totalFat = totalFat;
+    }
+
+    public void setTotalProtein(int totalProtein) {
+        this.totalProtein = totalProtein;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
