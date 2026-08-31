@@ -85,6 +85,7 @@ public class Food {
     public FoodCategory getFoodCategory() {
         return foodCategory;
     }
+
     public Long getId() {
         return id;
     }

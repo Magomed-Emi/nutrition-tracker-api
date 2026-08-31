@@ -15,24 +15,30 @@ public class DailyLog {
     private LocalDate date;
 
     @Column(nullable = false)
-    private int totalCalories;
+    private double totalCalories;
 
     @Column(nullable = true)
-    private int totalProtein;
+    private double totalProtein;
 
     @Column(nullable = true)
-    private int totalCarbs;
+    private double totalCarbs;
 
     @Column(nullable = true)
-    private int totalFat;
+    private double totalFat;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public DailyLog(){}
-    public DailyLog(LocalDate date, int totalCalories, int totalCarbs, int totalProtein, int totalFat)
-    {
+    public DailyLog() {
+    }
+
+    public DailyLog(LocalDate date,
+                    double totalCalories,
+                    double totalCarbs,
+                    double totalProtein,
+                    double totalFat) {
+
         this.date = date;
         this.totalCalories = totalCalories;
         this.totalCarbs = totalCarbs;
@@ -44,24 +50,24 @@ public class DailyLog {
         return id;
     }
 
-    public int getTotalCalories() {
-        return totalCalories;
-    }
-
     public LocalDate getDate() {
         return date;
     }
 
-    public int getTotalCarbs() {
+    public double getTotalCalories() {
+        return totalCalories;
+    }
+
+    public double getTotalProtein() {
+        return totalProtein;
+    }
+
+    public double getTotalCarbs() {
         return totalCarbs;
     }
 
-    public int getTotalFat() {
+    public double getTotalFat() {
         return totalFat;
-    }
-
-    public int getTotalProtein() {
-        return totalProtein;
     }
 
     public User getUser() {
@@ -72,20 +78,20 @@ public class DailyLog {
         this.date = date;
     }
 
-    public void setTotalCalories(int totalCalories) {
+    public void setTotalCalories(double totalCalories) {
         this.totalCalories = totalCalories;
     }
 
-    public void setTotalCarbs(int totalCarbs) {
+    public void setTotalProtein(double totalProtein) {
+        this.totalProtein = totalProtein;
+    }
+
+    public void setTotalCarbs(double totalCarbs) {
         this.totalCarbs = totalCarbs;
     }
 
-    public void setTotalFat(int totalFat) {
+    public void setTotalFat(double totalFat) {
         this.totalFat = totalFat;
-    }
-
-    public void setTotalProtein(int totalProtein) {
-        this.totalProtein = totalProtein;
     }
 
     public void setUser(User user) {
