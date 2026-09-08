@@ -5,6 +5,7 @@ import com.emi.nutritrack.entity.MealEntry;
 import com.emi.nutritrack.repository.DailyLogRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,5 +117,10 @@ public class DailyLogService {
         dailyLog.setTotalFat(calculateTotalFat(mealEntries));
 
         dailyLogRepository.save(dailyLog);
+    }
+
+    public Optional<DailyLog> getDailyLogByUserAndDate(Long userId, LocalDate dateLog)
+    {
+        return dailyLogRepository.findByUserIdAndDate(userId,dateLog);
     }
 }

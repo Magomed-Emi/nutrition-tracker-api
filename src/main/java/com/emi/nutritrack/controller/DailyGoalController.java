@@ -2,9 +2,12 @@ package com.emi.nutritrack.controller;
 
 import com.emi.nutritrack.entity.DailyGoal;
 import com.emi.nutritrack.service.DailyGoalService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,7 +40,9 @@ public class DailyGoalController {
     }
 
     @PutMapping("/updateDailyGoal/{id}")
-    public void updateDailyGoal(@RequestBody DailyGoal dailyGoal, @PathVariable Long id)
+    public void updateDailyGoal(
+            @RequestBody DailyGoal dailyGoal,
+            @PathVariable Long id)
     {
         dailyGoalService.updateDailyGoal(dailyGoal, id);
     }
@@ -48,4 +53,13 @@ public class DailyGoalController {
         dailyGoalService.deleteDailyGoal(id);
     }
 
+    @GetMapping("/remaining")
+    public Map<String, Double> getRemainingGoalsByUserAndDate(
+            @RequestParam Long userId,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate date)
+    {
+        return dailyGoalService.getRemainingGoalsByUserAndDate(userId, date);
+    }
 }

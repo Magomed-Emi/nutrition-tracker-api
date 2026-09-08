@@ -5,17 +5,22 @@ import com.emi.nutritrack.entity.DailyLog;
 import com.emi.nutritrack.repository.DailyGoalRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class DailyGoalService {
 
     private final DailyGoalRepository dailyGoalRepository;
+    private final DailyLogService dailyLogService;
 
-    public DailyGoalService(DailyGoalRepository dailyGoalRepository)
+    public DailyGoalService( DailyGoalRepository dailyGoalRepository, DailyLogService dailyLogService)
     {
         this.dailyGoalRepository = dailyGoalRepository;
+        this.dailyLogService = dailyLogService;
     }
 
     public void addDailyGoal(DailyGoal dailyGoal)
@@ -78,10 +83,42 @@ public class DailyGoalService {
         return dailyGoal.getTargetFat() - dailyLog.getTotalFat();
     }
 
-    /*
-        calculateCaloriesGoal(...)
-        calculateProteinGoal(...)
-        calculateCarbsGoal(...)
-        calculateFatGoal(...)
-    */
+
+    public Optional<DailyGoal> getDailyGoalByUserAndDate(Long userId, LocalDate date)
+    {
+        return dailyGoalRepository.findByUserIdAndDate(userId,date);
+    }
+
+    public Map<String, Double> getRemainingGoalsByUserAndDate(Long userId, LocalDate date)
+    {
+        Optional<DailyGoal> dailyGoalOptional = getDailyGoalByUserAndDate(userId, date);
+
+        Optional<DailyLog> dailyLogOptional = dailyLogService.getDailyLogByUserAndDate(userId, date);
+
+        if (dailyGoalOptional.isPresent() && dailyLogOptional.isPresent())
+        {
+            DailyGoal dailyGoal = dailyGoalOptional.get();
+            DailyLog dailyLog = dailyLogOptional.get();
+
+            double remainingCalories = calculateRemainingCaloriesGoal(dailyLog, dailyGoal);
+
+            double remainingProtein = calculateRemainingProteinGoal(dailyLog, dailyGoal);
+
+            double remainingCarbs = calculateRemainingCarbsGoal(dailyLog, dailyGoal);
+
+            double remainingFat = calculateRemainingFatGoal(dailyLog, dailyGoal);
+
+            Map<String, Double> remainingGoals = new HashMap<>();
+
+            remainingGoals.put("remainingCalories", remainingCalories);
+            remainingGoals.put("remainingProtein", remainingProtein);
+            remainingGoals.put("remainingCarbs", remainingCarbs);
+            remainingGoals.put("remainingFat", remainingFat);
+
+            return remainingGoals;
+        }
+
+        return new HashMap<>();
+    }
+
 }
