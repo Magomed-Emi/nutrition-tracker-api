@@ -13,7 +13,7 @@ public class MealEntry {
     private Long id;
 
     @Column(nullable = false)
-    private int quantity;
+    private double quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,7 +33,7 @@ public class MealEntry {
 
     public MealEntry(){}
 
-    public MealEntry(int quantity, MealType mealType, LocalDateTime consumedAt, User user, Food food)    {
+    public MealEntry(double quantity, MealType mealType, LocalDateTime consumedAt, User user, Food food)    {
         this.quantity = quantity;
         this.mealType = mealType;
         this.consumedAt = consumedAt;
@@ -45,7 +45,7 @@ public class MealEntry {
         return id;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
@@ -70,7 +70,7 @@ public class MealEntry {
         this.consumedAt = consumedAt;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 

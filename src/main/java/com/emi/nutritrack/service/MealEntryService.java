@@ -1,7 +1,14 @@
 package com.emi.nutritrack.service;
 
+import com.emi.nutritrack.dto.MealEntryRequest;
+import com.emi.nutritrack.dto.MealEntryResponse;
+import com.emi.nutritrack.entity.Food;
 import com.emi.nutritrack.entity.MealEntry;
+import com.emi.nutritrack.entity.User;
+import com.emi.nutritrack.exception.ResourceNotFoundException;
+import com.emi.nutritrack.repository.FoodRepository;
 import com.emi.nutritrack.repository.MealEntryRepository;
+import com.emi.nutritrack.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,10 +21,17 @@ import java.util.Optional;
 public class MealEntryService {
 
     private final MealEntryRepository mealEntryRepository;
+    private final FoodRepository foodRepository;
+    private final UserRepository userRepository;
 
-    public MealEntryService(MealEntryRepository mealEntryRepository)
+    public MealEntryService(
+            MealEntryRepository mealEntryRepository,
+            FoodRepository foodRepository,
+            UserRepository userRepository)
     {
         this.mealEntryRepository = mealEntryRepository;
+        this.foodRepository = foodRepository;
+        this.userRepository = userRepository;
     }
 
     public void addMealEntry(MealEntry mealEntry)
@@ -104,5 +118,36 @@ public class MealEntryService {
         double quantity = mealEntry.getQuantity();
 
         return fat * (quantity / quantityReference);
+    }
+
+    public MealEntryResponse createMealEntry(MealEntryRequest request)
+    {
+        Food food = foodRepository.findById(request.getFoodId())
+                .orElseThrow(() -> new ResourceNotFoundException("Food introuvable"));
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User introuvable"));
+
+        MealEntry mealEntry = new MealEntry();
+
+        mealEntry.setFood(food);
+        mealEntry.setUser(user);
+        mealEntry.setQuantity(request.getQuantity());
+        mealEntry.setMealType(request.getMealType());
+        mealEntry.setConsumedAt(LocalDateTime.now());
+
+        MealEntry savedMealEntry = mealEntryRepository.save(mealEntry);
+
+        MealEntryResponse response = new MealEntryResponse();
+
+        response.setId(savedMealEntry.getId());
+        response.setQuantity(savedMealEntry.getQuantity());
+        response.setMealType(savedMealEntry.getMealType());
+        response.setConsumedAt(savedMealEntry.getConsumedAt());
+        response.setUserId(savedMealEntry.getUser().getId());
+        response.setFoodId(savedMealEntry.getFood().getId());
+        response.setFoodName(savedMealEntry.getFood().getName());
+
+        return response;
     }
 }
