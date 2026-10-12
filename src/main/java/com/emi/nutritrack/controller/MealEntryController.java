@@ -3,6 +3,7 @@ package com.emi.nutritrack.controller;
 import com.emi.nutritrack.dto.MealEntryRequest;
 import com.emi.nutritrack.entity.MealEntry;
 import com.emi.nutritrack.service.MealEntryService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.emi.nutritrack.dto.MealEntryResponse;
 
@@ -35,7 +36,7 @@ public class MealEntryController {
     }
 
     @PostMapping("/create")
-    public MealEntryResponse createMealEntry(@RequestBody MealEntryRequest request)
+    public MealEntryResponse createMealEntry(@Valid @RequestBody MealEntryRequest request)
     {
         return mealEntryService.createMealEntry(request);
     }
