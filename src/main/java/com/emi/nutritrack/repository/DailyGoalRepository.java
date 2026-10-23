@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface DailyGoalRepository extends JpaRepository<DailyGoal, Long>
 {
     Optional<DailyGoal> findByUserIdAndDate(Long userId, LocalDate date);
+
+
 }

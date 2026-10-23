@@ -1,9 +1,12 @@
+
 package com.emi.nutritrack.service;
 
 import com.emi.nutritrack.entity.DailyLog;
+import com.emi.nutritrack.entity.Food;
 import com.emi.nutritrack.entity.MealEntry;
 import com.emi.nutritrack.entity.User;
 import com.emi.nutritrack.repository.DailyLogRepository;
+import com.emi.nutritrack.repository.MealEntryRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,13 +32,11 @@ public class DailyLogServiceTest {
     private DailyLogRepository dailyLogRepository;
 
     @Mock
-    private MealEntryService mealEntryService;
+    private MealEntryRepository mealEntryRepository;
 
     @InjectMocks
     private DailyLogService dailyLogService;
 
-
-    //Généré avec l'ia pour gagner du temps
 
     // =========================
     // CALCUL CALORIES
@@ -41,17 +45,24 @@ public class DailyLogServiceTest {
     @Test
     void calculateTotalCaloriesTest() {
 
+        Food food1 = new Food();
+        food1.setCalories(165);
+        food1.setQuantityReference(100);
+
         MealEntry mealEntry1 = new MealEntry();
+        mealEntry1.setFood(food1);
+        mealEntry1.setQuantity(200);
+
+        Food food2 = new Food();
+        food2.setCalories(200);
+        food2.setQuantityReference(100);
+
         MealEntry mealEntry2 = new MealEntry();
+        mealEntry2.setFood(food2);
+        mealEntry2.setQuantity(100);
 
         List<MealEntry> mealEntries =
                 List.of(mealEntry1, mealEntry2);
-
-        when(mealEntryService.calculateCalories(mealEntry1))
-                .thenReturn(330.0);
-
-        when(mealEntryService.calculateCalories(mealEntry2))
-                .thenReturn(200.0);
 
         double result =
                 dailyLogService.calculateTotalCalories(mealEntries);
@@ -67,17 +78,24 @@ public class DailyLogServiceTest {
     @Test
     void calculateTotalProteinTest() {
 
+        Food food1 = new Food();
+        food1.setProtein(31);
+        food1.setQuantityReference(100);
+
         MealEntry mealEntry1 = new MealEntry();
+        mealEntry1.setFood(food1);
+        mealEntry1.setQuantity(200);
+
+        Food food2 = new Food();
+        food2.setProtein(20);
+        food2.setQuantityReference(100);
+
         MealEntry mealEntry2 = new MealEntry();
+        mealEntry2.setFood(food2);
+        mealEntry2.setQuantity(100);
 
         List<MealEntry> mealEntries =
                 List.of(mealEntry1, mealEntry2);
-
-        when(mealEntryService.calculateProtein(mealEntry1))
-                .thenReturn(62.0);
-
-        when(mealEntryService.calculateProtein(mealEntry2))
-                .thenReturn(20.0);
 
         double result =
                 dailyLogService.calculateTotalProtein(mealEntries);
@@ -93,17 +111,24 @@ public class DailyLogServiceTest {
     @Test
     void calculateTotalCarbsTest() {
 
+        Food food1 = new Food();
+        food1.setCarbs(20);
+        food1.setQuantityReference(100);
+
         MealEntry mealEntry1 = new MealEntry();
+        mealEntry1.setFood(food1);
+        mealEntry1.setQuantity(200);
+
+        Food food2 = new Food();
+        food2.setCarbs(50);
+        food2.setQuantityReference(100);
+
         MealEntry mealEntry2 = new MealEntry();
+        mealEntry2.setFood(food2);
+        mealEntry2.setQuantity(100);
 
         List<MealEntry> mealEntries =
                 List.of(mealEntry1, mealEntry2);
-
-        when(mealEntryService.calculateCarbs(mealEntry1))
-                .thenReturn(40.0);
-
-        when(mealEntryService.calculateCarbs(mealEntry2))
-                .thenReturn(50.0);
 
         double result =
                 dailyLogService.calculateTotalCarbs(mealEntries);
@@ -119,17 +144,24 @@ public class DailyLogServiceTest {
     @Test
     void calculateTotalFatTest() {
 
+        Food food1 = new Food();
+        food1.setFat(4);
+        food1.setQuantityReference(100);
+
         MealEntry mealEntry1 = new MealEntry();
+        mealEntry1.setFood(food1);
+        mealEntry1.setQuantity(200);
+
+        Food food2 = new Food();
+        food2.setFat(12);
+        food2.setQuantityReference(100);
+
         MealEntry mealEntry2 = new MealEntry();
+        mealEntry2.setFood(food2);
+        mealEntry2.setQuantity(100);
 
         List<MealEntry> mealEntries =
                 List.of(mealEntry1, mealEntry2);
-
-        when(mealEntryService.calculateFat(mealEntry1))
-                .thenReturn(8.0);
-
-        when(mealEntryService.calculateFat(mealEntry2))
-                .thenReturn(12.0);
 
         double result =
                 dailyLogService.calculateTotalFat(mealEntries);
@@ -146,7 +178,6 @@ public class DailyLogServiceTest {
     void calculateDailyLogTest() {
 
         User user = mock(User.class);
-
         when(user.getId()).thenReturn(1L);
 
         LocalDate date = LocalDate.of(2026, 10, 10);
@@ -155,25 +186,24 @@ public class DailyLogServiceTest {
         dailyLog.setUser(user);
         dailyLog.setDate(date);
 
+        Food food = new Food();
+        food.setCalories(165);
+        food.setProtein(31);
+        food.setCarbs(20);
+        food.setFat(4);
+        food.setQuantityReference(100);
+
         MealEntry mealEntry = new MealEntry();
+        mealEntry.setFood(food);
+        mealEntry.setQuantity(200);
 
-        List<MealEntry> mealEntries =
-                List.of(mealEntry);
+        List<MealEntry> mealEntries = List.of(mealEntry);
 
-        when(mealEntryService.getMealEntriesByDate(1L, date))
-                .thenReturn(mealEntries);
-
-        when(mealEntryService.calculateCalories(mealEntry))
-                .thenReturn(330.0);
-
-        when(mealEntryService.calculateProtein(mealEntry))
-                .thenReturn(62.0);
-
-        when(mealEntryService.calculateCarbs(mealEntry))
-                .thenReturn(40.0);
-
-        when(mealEntryService.calculateFat(mealEntry))
-                .thenReturn(8.0);
+        when(mealEntryRepository.findByUserIdAndConsumedAtBetween(
+                eq(1L),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)
+        )).thenReturn(mealEntries);
 
         dailyLogService.calculateDailyLog(dailyLog);
 
@@ -265,8 +295,7 @@ public class DailyLogServiceTest {
 
         Long userId = 1L;
 
-        LocalDate date =
-                LocalDate.of(2026, 10, 10);
+        LocalDate date = LocalDate.of(2026, 10, 10);
 
         DailyLog dailyLog = new DailyLog();
 
